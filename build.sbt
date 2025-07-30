@@ -42,7 +42,12 @@ assembly / assemblyMergeStrategy := {
 
 ThisBuild / Compile / scalacOptions ++= Seq("-feature", "-deprecation", "-language:implicitConversions")
 
-enablePlugins(JavaAppPackaging)
+enablePlugins(
+  JavaAppPackaging,
+  GraalVMNativeImagePlugin
+)
+
+graalVMNativeImageGraalVersion := Some("21")
 
 ThisBuild / licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
