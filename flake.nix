@@ -29,6 +29,7 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             bash
+            graalvmPackages.graalvm-ce
             jdk 
             scala
             sbt 
