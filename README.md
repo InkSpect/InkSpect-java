@@ -21,6 +21,14 @@ direnv allow
 
 ## Build
 
+- Build Native Image
+
+```
+sbt clean compile graalvm-native-image:packageBin
+```
+
+- Build Java App Packaging
+
 ```
 sbt clean stage
 ```

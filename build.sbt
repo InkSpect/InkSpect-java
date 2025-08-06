@@ -27,7 +27,10 @@ libraryDependencies ++= Seq(
 
 // mostly so that `sbt assembly` works, but also to ensure that we don't end up
 // with unexpected shadowing in jar hell
-excludeDependencies ++= Seq(ExclusionRule("io.shiftleft", "codepropertygraph-domain-classes_3"))
+excludeDependencies ++= Seq(
+  ExclusionRule("io.shiftleft", "codepropertygraph-domain-classes_3"),
+  ExclusionRule("org.wildfly.common", "wildfly-common")
+)
 
 assembly / assemblyMergeStrategy := {
   case "log4j2.xml"                                             => MergeStrategy.first
@@ -42,7 +45,24 @@ assembly / assemblyMergeStrategy := {
 
 ThisBuild / Compile / scalacOptions ++= Seq("-feature", "-deprecation", "-language:implicitConversions")
 
-enablePlugins(JavaAppPackaging)
+enablePlugins(
+  JavaAppPackaging,
+  GraalVMNativeImagePlugin
+)
+
+//graalVMNativeImageGraalVersion := Some("24.0.2")
+containerBuildImage := Some("ghcr.io/graalvm/jdk-community:24.0.2")
+
+graalVMNativeImageOptions := Seq(
+  "-H:+UnlockExperimentalVMOptions",
+  "-R:MaximumHeapSizePercent=90",
+  "--gc=epsilon",
+  "--initialize-at-build-time=io.appthreat.*",
+  "--no-fallback",
+  "--exclude-config", ".*wildfly.*", ".*substitutions.*",
+  "--allow-incomplete-classpath",
+  "--report-unsupported-elements-at-runtime"
+)
 
 ThisBuild / licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
